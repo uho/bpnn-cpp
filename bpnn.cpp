@@ -7,11 +7,11 @@ bpnn::~bpnn()
   delete [] ah; ah=NULL;
   delete [] ao; ao=NULL;
 
-  delete [] wi; wi=NULL;
-  delete [] wo; wo=NULL;
+  //delete [] wi; wi=NULL;
+  //delete [] wo; wo=NULL;
 
-  delete [] ci; ci=NULL;
-  delete [] co; co=NULL;
+  //delete [] ci; ci=NULL;
+  //delete [] co; co=NULL;
 }
 // The constructor, it creates a nerural network with the given numbers of nodes, and with 
 // weights initialized to random numbers between min and max
@@ -37,8 +37,8 @@ bpnn::bpnn(int niin, int nhin, int noin, double min, double max)
     ao[i] = 1.0;
 
   // Initialize Weights
-  wi = new double[ni*nh];
-  wo = new double[nh*no];
+  wi.resize(ni*nh);
+  wo.resize(nh*no);
 
   
 
@@ -50,8 +50,8 @@ bpnn::bpnn(int niin, int nhin, int noin, double min, double max)
 
 
   // Initialize Change in Weights
-  ci = new double[ni*nh];
-  co = new double[nh*no];
+  ci.resize(ni*nh);
+  co.resize(nh*no);
 
   // Set them to 0
   for(int i=0; i<ni*nh; i++)
