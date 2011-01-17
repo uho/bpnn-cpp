@@ -4,7 +4,8 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-  bpnn network(2,2,1,-.1,.1);
+  //bpnn network(2,2,1,-.1,.1);
+  bpnn network("or.NN");
   int numPatterns=4;
   double* inputs = new double[2*numPatterns];
   inputs[0] = 0;
@@ -24,18 +25,22 @@ int main(int argc, char** argv)
   double learningRate = .5;
   double momentum = .1;
 
+  /*
   cout << "===================Training===============" << endl;
   network.train(numPatterns, inputs, targets, iterations, learningRate, momentum);
+  */
 
   cout << "====================Testing===============" << endl;
   double* out = network.update(inputs);
-  std::cout << out[0] << std::endl;
+  cout << out[0] << endl;
   out = network.update(inputs+2);
-  std::cout << out[0] << std::endl;
+  cout << out[0] << endl;
   out = network.update(inputs+4);
-  std::cout << out[0] << std::endl;
+  cout << out[0] << endl;
   out = network.update(inputs+6);
-  std::cout << out[0] << std::endl;
+  cout << out[0] << endl;
+
+  network.save("or.NN");
 
   return 0.0;
 }

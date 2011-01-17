@@ -1,9 +1,11 @@
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
 #include <time.h>
 #include <math.h>
 #include <vector>
 
+using namespace std;
 // The back-propagating neural network class
 class bpnn
 {
@@ -20,18 +22,21 @@ class bpnn
 
   // Note: These are actually matricies, to access the ith row jth column, you would do
   // wi[i*numcols+j] and for all these matricies numcols=nh
-  std::vector<double> wi; // input weight matrix
-  std::vector<double> wo; // hidden weight matrix
+  vector<double> wi; // input weight matrix
+  vector<double> wo; // hidden weight matrix
 
-  std::vector<double> ci; // input weight change matrix
-  std::vector<double> co; // hidden weight change matrix
+  vector<double> ci; // input weight change matrix
+  vector<double> co; // hidden weight change matrix
 
   public:
     bpnn(int, int, int, double, double);
+    bpnn(char* filename);
     ~bpnn();
     double* update(double*);
     double dsigmoid(double);
     double sigmoid(double);
     void train(int, double*, double*, int, double, double);
+    void save(char* filename);
+    void load(char* filename);
     double backPropagate(double*, double, double);
 };

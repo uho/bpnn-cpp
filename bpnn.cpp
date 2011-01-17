@@ -7,11 +7,42 @@ bpnn::~bpnn()
   delete [] ah; ah=NULL;
   delete [] ao; ao=NULL;
 
-  //delete [] wi; wi=NULL;
-  //delete [] wo; wo=NULL;
+}
+// The constructor, it loads a neural network from a file
+bpnn::bpnn(char* filename)
+{
+  ifstream fin;
+  fin.open(filename);
+  fin >> ni;
+  fin >> nh;
+  fin >> no;
 
-  //delete [] ci; ci=NULL;
-  //delete [] co; co=NULL;
+  // Initialize Activations
+  ai = new double[ni];
+  ah = new double[nh];
+  ao = new double[no];
+  // Set nodes to 1
+  for(int i=0; i<ni; i++)
+    ai[i] = 1.0;
+  for(int i=0; i<nh; i++)
+    ah[i] = 1.0;
+  for(int i=0; i<no; i++)
+    ao[i] = 1.0;
+
+  // Initialize Weights
+  wi.resize(ni*nh);
+  wo.resize(nh*no);
+
+  // Read Weights from file
+  for(int i=0; i<ni*nh; i++)
+    fin >> wi[i];
+  for(int i=0; i<nh*no; i++)
+    fin >> wo[i];
+  fin.close();
+
+  // Initialize Change in Weights to 0
+  ci.resize(ni*nh,0);
+  co.resize(nh*no,0);
 }
 // The constructor, it creates a nerural network with the given numbers of nodes, and with 
 // weights initialized to random numbers between min and max
@@ -40,25 +71,15 @@ bpnn::bpnn(int niin, int nhin, int noin, double min, double max)
   wi.resize(ni*nh);
   wo.resize(nh*no);
 
-  
-
   // Set them to random values within the range [min,max]
   for(int i=0; i<ni*nh; i++)
-      wi[i] = min + (double)rand() / (double)RAND_MAX * (max - min);
+    wi[i] = min + (double)rand() / (double)RAND_MAX * (max - min);
   for(int i=0; i<nh*no; i++)
-      wo[i] = min + (double)rand() / (double)RAND_MAX * (max - min);
+    wo[i] = min + (double)rand() / (double)RAND_MAX * (max - min);
 
-
-  // Initialize Change in Weights
-  ci.resize(ni*nh);
-  co.resize(nh*no);
-
-  // Set them to 0
-  for(int i=0; i<ni*nh; i++)
-      ci[i] = 0.0;
-  for(int i=0; i<nh*no; i++)
-      co[i] = 0.0;
-
+  // Initialize Change in Weights to 0
+  ci.resize(ni*nh,0);
+  co.resize(nh*no,0);
 }
 
 double* bpnn::update(double* inputs)
@@ -175,4 +196,22 @@ double bpnn::sigmoid(double x)
 double bpnn::dsigmoid(double x)
 {
   return 1.0 - x*x;
+}
+
+void bpnn::save(char* filename)
+{
+  ofstream fout;
+  fout.open(filename);
+  fout << ni << endl;
+  fout << nh << endl;
+  fout << no << endl;
+
+  // Write weights to file
+  for(int i=0; i<ni*nh; i++)
+    fout << wi[i] << " ";
+  fout << endl;
+  for(int i=0; i<nh*no; i++)
+    fout << wo[i] << " ";
+  fout << endl;
+  fout.close();
 }
