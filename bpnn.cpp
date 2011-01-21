@@ -44,7 +44,7 @@ bpnn::bpnn(char* filename)
   ci.resize(ni*nh,0);
   co.resize(nh*no,0);
 }
-// The constructor, it creates a nerural network with the given numbers of nodes, and with 
+// The constructor, it creates a neural network with the given numbers of nodes, and with 
 // weights initialized to random numbers between min and max
 bpnn::bpnn(int niin, int nhin, int noin, double min, double max)
 {
@@ -169,6 +169,68 @@ double bpnn::backPropagate(double* targets, double learningRate, double momentum
   return error;
 }
 
+void bpnn::test(char* filename)
+{
+  ifstream file(filename);
+  double learningRate = .5;
+  double momentum = .1;
+  int numPatterns, iterations;
+
+  file >> numPatterns;
+  file >> iterations;
+
+  double* inputs = new double[ni*numPatterns];
+  for(int i=0; i<2*numPatterns; i++)
+    file >> inputs[i];
+
+  double* targets = new double[no*numPatterns];
+  for(int i=0; i<numPatterns; i++)
+    file >> targets[i];
+
+  for(int i=0; i<numPatterns; i++)
+  {
+    double* out = update(inputs+i*(ni-1));// -1 for bias node
+
+    cout << "bpnn output: ";
+    for(int q=0; q<no; q++)
+      cout << out[q] << " ";
+    cout << endl;
+
+    cout << "target output: ";
+    for(int q=0; q<no; q++)
+      cout << targets[q] << " ";
+    cout << endl;
+    cout << "================================================================================" << endl;
+    //out = network.update(inputs+ni);
+    //cout << out[0] << endl;
+    //out = network.update(inputs+2*ni);
+    //cout << out[0] << endl;
+    //out = network.update(inputs+6);
+    //cout << out[0] << endl;
+  }
+}
+
+void bpnn::train(char* filename)
+{
+  ifstream file(filename);
+  double learningRate = .5;
+  double momentum = .1;
+  int numPatterns, iterations;
+
+  file >> numPatterns;
+  file >> iterations;
+
+  double* inputs = new double[(ni-1)*numPatterns];
+  for(int i=0; i<2*numPatterns; i++)
+    file >> inputs[i];
+
+  double* targets = new double[no*numPatterns];
+  for(int i=0; i<numPatterns; i++)
+    file >> targets[i];
+
+  train(numPatterns, inputs, targets, iterations, learningRate, momentum);
+}
+
 void bpnn::train(int numPatterns, double* inputs, double* targets, int iterations, double learningRate, double momentum)
 {
   for(int i=0; i<iterations; i++)
@@ -179,7 +241,10 @@ void bpnn::train(int numPatterns, double* inputs, double* targets, int iteration
       update(inputs+j*(ni-1));
       error += backPropagate(targets+j*no, learningRate, momentum);
     }
-    std::cout << "error is " << error << std::endl;
+    if(i%100 == 0 && i!=iterations-1)
+      std::cout << "Iteration: " << i << " error is " << error << std::endl;
+    if(i==iterations-1)
+    std::cout << "Final error is " << error << std::endl;
   }
 }
 
