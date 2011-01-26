@@ -4,43 +4,59 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-  //bpnn network(2,2,1,-.1,.1);
-  bpnn network("or.NN");
-  int numPatterns=4;
-  double* inputs = new double[2*numPatterns];
-  inputs[0] = 0;
-  inputs[1] = 0;
-  inputs[2] = 1;
-  inputs[3] = 0;
-  inputs[4] = 0;
-  inputs[5] = 1;
-  inputs[6] = 1;
-  inputs[7] = 1;
-  double* targets = new double[1*numPatterns];
-  targets[0] = 0;
-  targets[1] = 0;
-  targets[2] = 0;
-  targets[3] = 1;
-  int iterations = 1000;
-  double learningRate = .5;
-  double momentum = .1;
+  int validInp = 1;
+  int training = 0;
 
-  /*
-  cout << "===================Training===============" << endl;
-  network.train(numPatterns, inputs, targets, iterations, learningRate, momentum);
-  */
+  int ni;
+  int nh;
+  int no;
+  
+  if(argc!=4 && argc!=7)
+    validInp = 0;
+  if(validInp == 1 && argv[1][0] == 't')
+    training = 1;
+  else if(validInp == 1 && argv[1][0] == 'T')
+    training = 0;
+  else
+    validInp = 0;
 
-  cout << "====================Testing===============" << endl;
-  double* out = network.update(inputs);
-  cout << out[0] << endl;
-  out = network.update(inputs+2);
-  cout << out[0] << endl;
-  out = network.update(inputs+4);
-  cout << out[0] << endl;
-  out = network.update(inputs+6);
-  cout << out[0] << endl;
+  if(validInp == 1 && training == 1 && argc==7)
+  {
+    ni = atoi(argv[4]);
+    nh = atoi(argv[5]);
+    no = atoi(argv[6]);
+  }
+  else if(training==1)
+    validInp=0;
 
-  network.save("or.NN");
+  if(validInp == 0)
+  {
+    cout << "Usage: and [tT] filenameNetwork filenameData [ni nh no]" << endl << "t means"
+    " training, T means testing. If training is chosen, then ni, nh, and no must be specified." << endl;
+    return 1;
+  }
 
-  return 0.0;
+  if(training == 0)
+  {
+    cout << "====================Testing===============" << endl;
+    // Load network
+    bpnn network(argv[3]);
+    // Test on data from file
+    network.test(argv[2]);
+  }
+  if(training == 1)
+  {
+    cout << "===================Training===============" << endl;
+    // Determine ni, nh, and no from data file
+    
+    // Initialize network
+    bpnn network(ni, nh, no, -.1, .1);
+    // Train on data from file
+    network.train(argv[2]);
+    // Save to file
+    network.save(argv[3]);
+  }
+
+  return 0;
+
 }

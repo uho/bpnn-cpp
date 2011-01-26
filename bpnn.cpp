@@ -180,11 +180,11 @@ void bpnn::test(char* filename)
   file >> iterations;
 
   double* inputs = new double[ni*numPatterns];
-  for(int i=0; i<2*numPatterns; i++)
+  for(int i=0; i<(ni-1)*numPatterns; i++)
     file >> inputs[i];
 
   double* targets = new double[no*numPatterns];
-  for(int i=0; i<numPatterns; i++)
+  for(int i=0; i<no*numPatterns; i++)
     file >> targets[i];
 
   for(int i=0; i<numPatterns; i++)
@@ -197,7 +197,7 @@ void bpnn::test(char* filename)
     cout << endl;
 
     cout << "target output: ";
-    for(int q=0; q<no; q++)
+    for(int q=no*i; q<no*(i+1); q++)
       cout << targets[q] << " ";
     cout << endl;
     cout << "================================================================================" << endl;
@@ -221,11 +221,11 @@ void bpnn::train(char* filename)
   file >> iterations;
 
   double* inputs = new double[(ni-1)*numPatterns];
-  for(int i=0; i<2*numPatterns; i++)
+  for(int i=0; i<(ni-1)*numPatterns; i++)
     file >> inputs[i];
 
   double* targets = new double[no*numPatterns];
-  for(int i=0; i<numPatterns; i++)
+  for(int i=0; i<no*numPatterns; i++)
     file >> targets[i];
 
   train(numPatterns, inputs, targets, iterations, learningRate, momentum);
