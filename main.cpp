@@ -13,9 +13,9 @@ int main(int argc, char** argv)
   
   if(argc!=4 && argc!=7)
     validInp = 0;
-  if(validInp == 1 && argv[1][0] == 't')
+  if(validInp == 1 && argv[1][0] == 'r')
     training = 1;
-  else if(validInp == 1 && argv[1][0] == 'T')
+  else if(validInp == 1 && argv[1][0] == 'e')
     training = 0;
   else
     validInp = 0;
@@ -31,8 +31,8 @@ int main(int argc, char** argv)
 
   if(validInp == 0)
   {
-    cout << "Usage: and [tT] filenameNetwork filenameData [ni nh no]" << endl << "t means"
-    " training, T means testing. If training is chosen, then ni, nh, and no must be specified." << endl;
+    cout << "Usage: and [re] filenameNetwork filenameData [ni nh no]" << endl << "r means"
+    " training, e means testing. If training is chosen, then ni, nh, and no must be specified." << endl;
     return 1;
   }
 
