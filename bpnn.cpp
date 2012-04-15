@@ -201,12 +201,30 @@ void bpnn::test(char* filename)
       cout << targets[q] << " ";
     cout << endl;
     cout << "================================================================================" << endl;
-    //out = network.update(inputs+ni);
-    //cout << out[0] << endl;
-    //out = network.update(inputs+2*ni);
-    //cout << out[0] << endl;
-    //out = network.update(inputs+6);
-    //cout << out[0] << endl;
+  }
+}
+
+void bpnn::run(char* filename)
+{
+  ifstream file(filename);
+  double learningRate = .5;
+  double momentum = .1;
+  int numPatterns, iterations;
+
+  file >> numPatterns;
+
+  double* inputs = new double[ni*numPatterns];
+  for(int i=0; i<(ni-1)*numPatterns; i++)
+    file >> inputs[i];
+
+  for(int i=0; i<numPatterns; i++)
+  {
+    double* out = update(inputs+i*(ni-1));// -1 for bias node
+
+    cout << "bpnn output: ";
+    for(int q=0; q<no; q++)
+      cout << out[q] << " ";
+    cout << endl;
   }
 }
 
@@ -215,7 +233,8 @@ void bpnn::train(char* filename)
   ifstream file(filename);
   double learningRate = .5;
   double momentum = .1;
-  int numPatterns, iterations;
+  int numPatterns=0;
+	int iterations=0;
 
   file >> numPatterns;
   file >> iterations;
@@ -226,26 +245,31 @@ void bpnn::train(char* filename)
 
   double* targets = new double[no*numPatterns];
   for(int i=0; i<no*numPatterns; i++)
+	{
     file >> targets[i];
+		cout << targets[i] << endl;
+	}
 
   train(numPatterns, inputs, targets, iterations, learningRate, momentum);
 }
 
 void bpnn::train(int numPatterns, double* inputs, double* targets, int iterations, double learningRate, double momentum)
 {
+  double error = 0.0;
   for(int i=0; i<iterations; i++)
   {
-    double error = 0.0;
+		error=0.0;
     for(int j=0; j<numPatterns; j++)
     {
       update(inputs+j*(ni-1));
       error += backPropagate(targets+j*no, learningRate, momentum);
     }
-    if(i%100 == 0 && i!=iterations-1)
+    if(i%1 == 0 && i!=iterations-1)
       std::cout << "Iteration: " << i << " error is " << error << std::endl;
-    if(i==iterations-1)
-    std::cout << "Final error is " << error << std::endl;
+		if(error < 0.005)
+			break;
   }
+	std::cout << "Final error is " << error << std::endl;
 }
 
 double bpnn::sigmoid(double x)

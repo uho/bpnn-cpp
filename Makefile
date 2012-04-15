@@ -1,8 +1,8 @@
 %.o: %.cpp
-	g++ -g -c $< 
+	g++ -c $< 
 
 main: main.o bpnn.o
-	g++ -g main.o bpnn.o -o NN
+	g++ main.o bpnn.o -o NN
 
 clean: 
 	rm *.o

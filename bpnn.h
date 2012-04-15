@@ -38,6 +38,7 @@ class bpnn
     double sigmoid(double);
     void train(int, double*, double*, int, double, double);
     void train(char* filename);
+    void run(char* filename);
     void save(char* filename);
     void load(char* filename);
     double backPropagate(double*, double, double);
