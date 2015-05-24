@@ -1,0 +1,1 @@
+Based on the python back-propagating neural network that can be found here http://arctrix.com/nas/python/bpnn.py, rewritten in c/c++ for extra speed.
